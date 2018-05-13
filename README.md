@@ -1,5 +1,6 @@
 # Dolphinsight Developer Guide, V1.0
-[![N|Solid](https://cldup.com/dTxpPi9lDf.thumb.png)](https://nodesource.com/products/nsolid)
+
+
 
 
 # 1. About Dolphinsight
