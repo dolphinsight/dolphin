@@ -14,7 +14,7 @@ Dolphinsight(DI) is an interactive big data viz application which supports diver
 
 # 3. Dolphinsight Architecture
 
-Currently, the DI is made up three key components and they are
+Currently, the DI is composed by three key components and they are
    - dolphinsight(core), 
    - dolphinprotocol(protocol) and 
    - dolphinteractive(interactive).
