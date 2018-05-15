@@ -422,3 +422,126 @@ public class DataSourceType {
  
  The executor is the branch for generate the instance of executor of various graph executor.
  
+ ```
+ package com.brill.dolphin.dolphinsight.executorengine.executor.impl.postgresql;
+
+import com.brill.dolphin.dolphinsight.executorengine.executor.Executor;
+import com.brill.dolphin.dolphinsight.executorengine.executor.impl.BasicLineChartExecutor;
+import com.brill.dolphin.dolphinsight.executorengine.executor.impl.BasicScatterChartExecutor;
+import com.brill.dolphin.dolphinsight.executorengine.executor.impl.StackAreaChartExecutor;
+import com.brill.dolphin.dolphinsight.executorengine.planner.Plan;
+import com.brill.dolphin.dolphinsight.frontend.VizResult;
+import com.brill.dolphin.dolphinsight.graph.vizgraphtype.VizGraphType;
+
+public class PostgreSQLExecutor extends Executor{
+
+
+    public VizResult executePlan(Plan plan) {
+
+        VizResult vizResult = null;
+
+        if(plan.getVizGraphType().equalsIgnoreCase(VizGraphType.BasicLineChart))
+        {
+            BasicLineChartExecutor basicLineChartExecutor = new BasicLineChartExecutor();
+            vizResult = basicLineChartExecutor.executePlan(plan);
+        }
+        else if(plan.getVizGraphType().equalsIgnoreCase(VizGraphType.StackAreaChart))
+        {
+            StackAreaChartExecutor stackAreaChartExecutor = new StackAreaChartExecutor();
+            vizResult = stackAreaChartExecutor.executePlan(plan);
+        }
+        else if(plan.getVizGraphType().equalsIgnoreCase(VizGraphType.BasicScatterChart))
+        {
+            BasicScatterChartExecutor basicScatterChartExecutor = new BasicScatterChartExecutor();
+            vizResult = basicScatterChartExecutor.executePlan(plan);
+        }
+
+
+        return vizResult;
+    }
+}
+
+
+ ```
+
+The exmaple code of XXXQuery is as following.
+
+```
+package com.brill.dolphin.dolphinsight.executorengine.executor.impl.postgresql;
+
+import com.brill.dolphin.dolphinsight.entity.model.DataSource;
+import com.brill.dolphin.dolphinsight.executorengine.executor.QueryBase;
+import com.brill.dolphin.dolphinsight.utils.ConnectionManager;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class PostgreSQLQuery implements QueryBase{
+
+    private Connection connection = null;
+
+    public boolean open(DataSource dataSource) {
+        boolean bResult = false;
+
+        connection =  ConnectionManager.getPostgreSQLConnection(dataSource.getIp(),
+                Integer.valueOf(dataSource.getPort()),
+                dataSource.getDatabaseName(),
+                dataSource.getUserName(),
+                dataSource.getPassword());
+
+        bResult = (connection == null)? false : true;
+        return bResult;
+    }
+
+    public ResultSet execute(String sqlStatement) {
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        if(connection != null)
+        {
+            try {
+                statement = connection.createStatement();
+                System.out.println("Query Executed:");
+                System.out.println(sqlStatement);
+                resultSet = statement.executeQuery(sqlStatement);
+            } catch (SQLException e) {
+                if(statement != null) {
+                    try {
+                        statement.close();
+                        statement = null;
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+
+                if(resultSet != null)
+                {
+                    try {
+                        resultSet.close();
+                        resultSet = null;
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+                e.printStackTrace();
+            }
+        }
+        return resultSet;
+    }
+
+    public void close() {
+        if(connection != null)
+        {
+            try {
+                connection.close();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+}
+
+
+```
