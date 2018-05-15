@@ -204,7 +204,60 @@ public class SimpleScatterChartRule extends VizGraphRuleBase{
 }
 
 ```
+After you created the rule as above, please add the rule into the VizGraphRuleEngine. The rule engine will scan each rule, and check if the rule is applicable.
 
+```
+package com.brill.dolphin.dolphinsight.graph;
+
+import com.brill.dolphin.dolphinsight.entity.model.DataSet;
+import com.brill.dolphin.dolphinsight.entity.model.DataSource;
+import com.brill.dolphin.dolphinsight.frontend.FunctionField;
+import com.brill.dolphin.dolphinsight.frontend.VizGraphSupported;
+import com.brill.dolphin.dolphinsight.graph.vizgraphrule.*;
+
+import java.util.Vector;
+
+/**
+ * use the rule engine to predict the graph should be supported.
+ */
+public class VizGraphRuleEngine {
+
+    // hold all the viz graph type
+    public static Vector<VizGraphRuleBase> Rules = new Vector<VizGraphRuleBase>();
+
+    static
+    {
+        //Rules.add(new ExampleRule());
+        // all new rules come to the below
+        Rules.add(new BasicLineChartRule());
+        Rules.add(new BasicScatterChartRule());
+        Rules.add(new StackAreaChartRule());
+    }
+
+    /**
+     * Give user the selection, return the viz graph supported.
+     * @param dataSource
+     * @param dataSet
+     * @param columnFunctionFields
+     * @param rowFunctionFields
+     * @return
+     */
+    public VizGraphSupported getVizGraphSupported(DataSource dataSource,
+                                                  DataSet dataSet,
+                                                  Vector<FunctionField> columnFunctionFields,
+                                                  Vector<FunctionField> rowFunctionFields) {
+        VizGraphSupported vizGraphSupported = new VizGraphSupported();
+
+        for (VizGraphRuleBase r : VizGraphRuleEngine.Rules) {
+            if (r.isApplicable(dataSource, dataSet, columnFunctionFields, rowFunctionFields)) {
+                vizGraphSupported.add(r.getVizGraphType());
+            }
+        }
+        return vizGraphSupported;
+    }
+}
+
+```
 
  - step 4. Add the planner for this graph.
 The concept of the planner comes from the traditional database system.
