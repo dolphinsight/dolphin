@@ -324,8 +324,12 @@ Please refer BasicScatterChartExecutor for the details.
 
 ### 4.2 How to Add a New Data Source
 Dolphinsight is a viz application which aims to cover most of data sources,e.g. MySQL, PostgreSQL and others. Because of well architecture design , now Adding a New Data Source becomes quite easy. Following me.
+
+ - Step 1: Add data source and data set
 Most of work are in admin.service package. 
+
 For each data source, there are two layers of concepts.One is DataSource, another is DataSet. In database domain, DataSource is the database, and the DataSet is the table(or relation). There are some predefined interfaces need to be implemented both in DataSource and DataSet.
+
 For DataSource, there are two interfaces. 
 a.verifyDataSource() is used to verify the connection/existence of data source(the existence of database).
 b.listDataSetCandidateNames() is going to list all datasets(tables) in this datasource. Here, "candidate" means that we list all the tables within the database. 
@@ -401,3 +405,20 @@ public class OpManager {
 }
 
 ```
+
+ 
+ - Step 2:Add new data source entry
+ ```
+ package com.brill.dolphin.dolphinsight.common;
+
+public class DataSourceType {
+
+    public static String MySQL = "MySQL_Data_Source";
+    public static String PostgreSQL = "PostgreSQL_Data_Source";
+}
+
+```
+ - Step 3: Add new executor and query for data source
+ 
+ The executor is the branch for generate the instance of executor of various graph executor.
+ 
