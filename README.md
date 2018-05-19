@@ -545,3 +545,72 @@ public class PostgreSQLQuery implements QueryBase{
 
 
 ```
+ - Step 4: Regsiter the new executor and query for data source
+ 
+ We need register the newly XXXExecutor and XXXQuery to ExecutorManager and QueryManager.
+ 
+ ```
+ package com.brill.dolphin.dolphinsight.executorengine.executor;
+
+import com.brill.dolphin.dolphinsight.common.DataSourceType;
+import com.brill.dolphin.dolphinsight.entity.model.DataSource;
+import com.brill.dolphin.dolphinsight.executorengine.executor.impl.mysql.MySQLExecutor;
+import com.brill.dolphin.dolphinsight.executorengine.executor.impl.postgresql.PostgreSQLExecutor;
+import com.brill.dolphin.dolphinsight.executorengine.executor.impl.sqlserver.SQLServerExecutor;
+
+public class ExecutorManager {
+
+
+    public static Executor getExecutor(String dataSourceType)
+    {
+        Executor executor = null;
+
+        if(dataSourceType.equalsIgnoreCase(DataSourceType.MySQL))
+        {
+            executor = new MySQLExecutor();
+        }
+        else if(dataSourceType.equalsIgnoreCase(DataSourceType.PostgreSQL))
+        {
+            executor = new PostgreSQLExecutor();
+        }
+        else if(dataSourceType.equalsIgnoreCase(DataSourceType.SQLServer))
+        {
+            executor = new SQLServerExecutor();
+        }
+
+        return executor;
+    }
+}
+ ```
+ and 
+ 
+ ```
+ package com.brill.dolphin.dolphinsight.executorengine.executor;
+
+import com.brill.dolphin.dolphinsight.common.DataSourceType;
+import com.brill.dolphin.dolphinsight.executorengine.executor.impl.mysql.MySQLQuery;
+import com.brill.dolphin.dolphinsight.executorengine.executor.impl.postgresql.PostgreSQLQuery;
+import com.brill.dolphin.dolphinsight.executorengine.executor.impl.sqlserver.SQLServerQuery;
+
+public class QueryManager {
+
+    public static QueryBase getQuery(String dataSourceType)
+    {
+        QueryBase query = null;
+
+        if(dataSourceType.equalsIgnoreCase(DataSourceType.MySQL))
+        {
+            query = new MySQLQuery();
+        }
+        else if(dataSourceType.equalsIgnoreCase(DataSourceType.PostgreSQL))
+        {
+            query = new PostgreSQLQuery();
+        }
+        else if(dataSourceType.equalsIgnoreCase(DataSourceType.SQLServer))
+        {
+            query = new SQLServerQuery();
+        }
+        return query;
+    }
+}
+ ```
