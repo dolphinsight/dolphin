@@ -1,6 +1,6 @@
 # Dolphinsight Developer Guide, V1.0
 
-
+![Dolphinsight](https://github.com/dolphinsight/dolphinsight/raw/master/dolphinsight.logo.jpeg)
 
 # 1. About Dolphinsight
 
